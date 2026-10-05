@@ -1,0 +1,9 @@
+# Downloaded datasets and trained models are rebuilt by the pipeline
+data/
+artifacts/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.DS_Store

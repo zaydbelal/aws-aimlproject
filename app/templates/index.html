@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hybrid Recommender</title>
+  <meta name="description" content="A hybrid movie recommender that degrades gracefully for new users and new movies.">
+  <link rel="preload" href="{{ url_for('static', filename='fonts/Manrope-Variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141413'/%3E%3Crect x='3' y='9' width='2' height='4' fill='%23f9f8f6'/%3E%3Crect x='7' y='6' width='2' height='7' fill='%23f9f8f6'/%3E%3Crect x='11' y='3' width='2' height='10' fill='%23b5441b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <header class="masthead">
+      <a class="wordmark" href="#recommend">Hybrid Recommender <span>/ AIML-01</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="#recommend" data-view="recommend">Recommend</a>
+        <a href="#evaluation" data-view="evaluation">Evaluation</a>
+      </nav>
+    </header>
+
+    <!-- ================= Recommend ================= -->
+    <main id="view-recommend">
+      <section class="hero">
+        <h1>Good picks, even with no history.</h1>
+        <p>Collaborative filtering, movie metadata and popularity, blended per user and per movie. The blend leans on whichever signal the data can support.</p>
+      </section>
+
+      <div class="workspace">
+        <form class="controls" id="controls" novalidate>
+          <div class="step">
+            <span class="label">Viewer</span>
+            <div class="segmented" role="group" aria-label="Viewer type">
+              <button type="button" data-mode="existing" aria-pressed="true">Existing user</button>
+              <button type="button" data-mode="new" aria-pressed="false">New user</button>
+            </div>
+
+            <div id="mode-existing">
+              <label class="field">
+                <span>MovieLens user id</span>
+                <input class="input" id="user-id" inputmode="numeric" autocomplete="off" placeholder="e.g. 42">
+              </label>
+              <p class="error-text" id="user-error" role="alert" hidden></p>
+              <span class="label" style="margin-top:24px">Try one</span>
+              <ul class="examples" id="examples"><li><button type="button" disabled><span class="ex-label">Loading users…</span></button></li></ul>
+            </div>
+
+            <div id="mode-new" hidden>
+              <div class="search">
+                <label class="field">
+                  <span>Add movies you have seen</span>
+                  <input class="input" id="search" autocomplete="off" placeholder="Search a title" role="combobox" aria-expanded="false" aria-controls="search-results">
+                </label>
+                <ul class="search-results" id="search-results" role="listbox" hidden></ul>
+              </div>
+              <p class="hint" id="rated-empty">Nothing rated yet, so you will get the popularity fallback. Add a movie and watch the blend shift.</p>
+              <ul class="rated" id="rated"></ul>
+              <div class="row-2" id="demographics" hidden style="margin-top:20px">
+                <label class="field"><span>Gender</span>
+                  <select class="select" id="gender"><option value="">Not given</option><option value="F">Female</option><option value="M">Male</option></select>
+                </label>
+                <label class="field"><span>Age</span>
+                  <select class="select" id="age"><option value="">Not given</option></select>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <details class="options">
+              <summary>Options</summary>
+              <div class="options-body">
+                <label class="field"><span>Model</span>
+                  <select class="select" id="model"></select>
+                </label>
+                <label class="field"><span>List length</span>
+                  <select class="select" id="k"><option value="10">10 movies</option><option value="20">20 movies</option></select>
+                </label>
+                <label class="check"><input type="checkbox" id="diversify">
+                  <span>Diversify the list (MMR re-ranking: fewer look-alikes, fewer blockbusters)</span></label>
+              </div>
+            </details>
+          </div>
+
+          <button class="primary" type="submit" id="go">Recommend</button>
+        </form>
+
+        <section class="results" id="results" aria-live="polite">
+          <div class="state">
+            <h2>Pick a viewer to begin.</h2>
+            <p>Each movie in the list shows where its score came from: collaborative filtering, content similarity or popularity.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= Evaluation ================= -->
+    <main id="view-evaluation" hidden>
+      <section class="hero">
+        <h1>How it holds up when the history runs out.</h1>
+        <p id="eval-lede">Offline results on a time-based split, with deliberately constructed cold-start users and movies.</p>
+      </section>
+      <div id="eval-body">
+        <div class="state"><h2>Loading results…</h2></div>
+      </div>
+    </main>
+
+    <footer class="footer">MovieLens data © GroupLens Research, University of Minnesota. Built for the AWS Student Builder Group AI/ML track.</footer>
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "ml-1m": {
+    "als": {
+      "factors": 128,
+      "regularization": 100.0,
+      "alpha": 1.0
+    },
+    "hybrid": {
+      "k_user": 30.0,
+      "k_item": 300.0,
+      "k_content": 30.0
+    }
+  }
+}
